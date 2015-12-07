@@ -9,6 +9,9 @@ var cellsize = 15;
 var grid = true;
 var gameInterval;
 
+// number of cells in each direction that are tracked off screen
+var offscreen = 10;
+
 var fps = 20;
 var actualfps = fps;
 var lastTick = Date.now();
@@ -49,7 +52,11 @@ Cell.prototype.countNeighbours = function() {
  */
 Cell.prototype.toggle = function() {
   ctx.fillStyle = this.active ? "#fff" : "#000";
-  ctx.fillRect(grid + this.x * cellsize, grid + this.y * cellsize, cellsize - grid, cellsize - grid);
+  var x = grid + (this.x - offscreen) * cellsize;
+  var y = grid + (this.y - offscreen) * cellsize;
+  var width = cellsize - grid;
+  var height = cellsize - grid;
+  ctx.fillRect(x, y, width, height);
   this.active = !this.active;
 };
 
@@ -62,7 +69,7 @@ Cell.prototype.toggle = function() {
 function pointToCell(x, y) {
   var cx = Math.floor((x - canvas.offsetLeft) / cellsize);
   var cy = Math.floor((y - canvas.offsetTop) / cellsize);
-  return cells[cx][cy];
+  return cells[cx + offscreen][cy + offscreen];
 }
 
 /**
@@ -83,8 +90,8 @@ function drawGrid() {
 }
 
 function createGame() {
-  for (var ix = 0; ix < canvas.width / cellsize + 6; ix++) {
-    for (var iy = 0; iy < canvas.height / cellsize + 6; iy++) {
+  for (var ix = 0; ix < canvas.width / cellsize + 2 * offscreen; ix++) {
+    for (var iy = 0; iy < canvas.height / cellsize + 2 * offscreen; iy++) {
       cells[ix] = cells[ix] || [];
       cells[ix][iy] = new Cell(ix, iy);
     }
