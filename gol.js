@@ -5,7 +5,7 @@ var ctx = canvas.getContext("2d");
 ctx.lineWidth = 1;
 
 var cells = [];
-var cellsize = 15;
+var cellsize = 7;
 var grid = true;
 var gameInterval;
 
@@ -76,7 +76,7 @@ function pointToCell(x, y) {
  * Draws the grid (i.e. cell borders) onto the canvas
  */
 function drawGrid() {
-  ctx.strokeStyle = "#888";
+  ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
   ctx.beginPath();
   for (var lx = 0; lx < canvas.width / cellsize; lx++) {
     ctx.moveTo(lx * cellsize + 0.5, 0);
