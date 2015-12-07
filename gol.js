@@ -1,13 +1,16 @@
+var buttons = {};
+
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
 ctx.lineWidth = 1;
 
 var cells = [];
-var cellsize = 10;
+var cellsize = 15;
+var grid = true;
 var gameInterval;
 
 var fps = 20;
-var actualfps;
+var actualfps = fps;
 var lastTick = Date.now();
 var fpsHistory = [];
 
@@ -46,7 +49,7 @@ Cell.prototype.countNeighbours = function() {
  */
 Cell.prototype.toggle = function() {
   ctx.fillStyle = this.active ? "#fff" : "#000";
-  ctx.fillRect(1 + this.x * cellsize, 1 + this.y * cellsize, 9, 9);
+  ctx.fillRect(grid + this.x * cellsize, grid + this.y * cellsize, cellsize - grid, cellsize - grid);
   this.active = !this.active;
 };
 
@@ -57,8 +60,8 @@ Cell.prototype.toggle = function() {
  * @returns {Cell} - The underlying Cell
  */
 function pointToCell(x, y) {
-  var cx = Math.floor(x / cellsize);
-  var cy = Math.floor(y / cellsize);
+  var cx = Math.floor((x - canvas.offsetLeft) / cellsize);
+  var cy = Math.floor((y - canvas.offsetTop) / cellsize);
   return cells[cx][cy];
 }
 
@@ -80,8 +83,8 @@ function drawGrid() {
 }
 
 function createGame() {
-  for (var ix = 0; ix < canvas.width / cellsize; ix++) {
-    for (var iy = 0; iy < canvas.height / cellsize; iy++) {
+  for (var ix = 0; ix < canvas.width / cellsize + 6; ix++) {
+    for (var iy = 0; iy < canvas.height / cellsize + 6; iy++) {
       cells[ix] = cells[ix] || [];
       cells[ix][iy] = new Cell(ix, iy);
     }
@@ -126,43 +129,65 @@ function tick() {
 }
 
 function drawFPS() {
-  ctx.font = "48px Sans-Serif";
-  ctx.fillStyle = "#000";
-  ctx.fillRect(canvas.width - 110, 10, 100, 50);
-  ctx.fillStyle = "#0f0";
-  ctx.fillText(actualfps, canvas.width - 100, 50);
+  buttons.actualfps.value = actualfps;
 }
 
 function play() {
   if (!gameInterval) {
     gameInterval = setInterval(tick, 1000 / fps);
   }
+  buttons.play.textContent = "HALT";
 }
 
 function pause() {
   clearInterval(gameInterval);
   gameInterval = null;
+  buttons.play.textContent = "PLAY";
+}
+
+function playpause() {
+  if (gameInterval) {
+    pause();
+  } else {
+    play();
+  }
 }
 
 function setFPS(newfps) {
   fps = newfps;
   fpsHistory = [];
-  pause();
-  play();
+
+  // restart game with new interval
+  if (gameInterval) {
+    pause();
+    play();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function(event) {
-  document.body.appendChild(canvas);
+  buttons.play = document.querySelector("#playpause");
+  buttons.next = document.querySelector("#next");
+  buttons.targetfps = document.querySelector("#targetfps");
+  buttons.actualfps = document.querySelector("#actualfps");
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  buttons.play.onclick = playpause;
+  buttons.next.onclick = tick;
+  buttons.targetfps.onchange = function(e) {
+    setFPS(e.target.value);
+  };
+
+  var content = document.querySelector("#content");
+  content.appendChild(canvas);
+
+  canvas.width = content.clientWidth;
+  canvas.height = content.clientHeight;
 
   createGame();
-  drawGrid();
+  if (grid) {
+    drawGrid();
+  }
 
   setInterval(drawFPS, 500);
-
-  play();
 
   canvas.addEventListener("click", function(evt) {
     var cell = pointToCell(evt.clientX, evt.clientY);

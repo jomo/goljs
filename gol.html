@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>goljs</title>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style type="text/css">
     html, body {
@@ -11,11 +11,82 @@
       width: 100%;
       height: 100%;
       font-size: 0;
+      font-family: 'sans-serif', arial;
+    }
+
+    body {
+      display: flex;
+      flex-flow: column;
+    }
+
+    #controls {
+      font-size: 16px;
+      padding: 1em;
+      background: #add8e6;
+      flex: 0 1 auto;
+    }
+
+    #controls div {
+      display: inline-block;
+      border: 1px solid;
+      padding: 3px;
+      background: #90ee90;
+      margin: 0 1em;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    #controls div:hover {
+      background: #b0feb0
+    }
+
+    #controls div:active {
+      box-shadow: 0 0 5px inset;
+    }
+
+    #targetfps, #actualfps {
+      height: 100%;
+      width: 3em;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid gray;
+      font-size: inherit;
+      padding: 0px;
+      margin: 0px;
+      line-height: 1em;
+    }
+
+    #actual {
+      float: right;
+    }
+
+    #content {
+      height: 100%;
+      width: 100%;
+      flex: 1 1 auto;
+    }
+
+    #canvas {
+      height: 100%;
+      width: 100%;
     }
   </style>
   <script src="./gol.js"></script>
 </head>
 <body>
+  <div id="controls">
+    <div id="playpause">PLAY</div>
+    <div id="next">STEP</div>
+    <div id="setfps">TARGET FPS: <input type="number" min="1" step="1" max="256" value="20" placeholder="FPS" id="targetfps"></div>
+    <div id="actual">ACTUAL FPS: <input id="actualfps" value="0" readonly></div>
+  </div>
+  <div id="content">
 
+  </div>
 </body>
 </html>
