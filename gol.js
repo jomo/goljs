@@ -17,7 +17,7 @@ var offscreen = 10;
 // calculating FPS
 var fps = 20;
 var gameInterval;
-var actualfps = fps;
+var actualfps = 0;
 var lastTick = Date.now();
 var fpsHistory = [];
 
@@ -228,6 +228,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   buttons.targetfps.onchange = function(e) {
     setFPS(e.target.value);
   };
+  setFPS(buttons.targetfps.value);
 
   var content = document.querySelector("#content");
   content.appendChild(canvas);
