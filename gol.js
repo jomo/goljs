@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   setInterval(drawFPS, 500);
 
   canvas.addEventListener("click", function(evt) {
-    var cell = pointToCell(evt.clientX, evt.clientY);
+    var cell = pointToCell(evt.layerX, evt.layerY);
     cell.toggle();
     console.log(cell);
   }, false);
