@@ -61,6 +61,21 @@ Cell.prototype.toggle = function() {
 };
 
 /**
+ * Apply the game rules to check whether this cell will toggle in the next generation
+ * @returns {boolean} - will toggle
+ */
+Cell.prototype.willToggle = function() {
+  var neighbours = this.countNeighbours();
+  if (this.active) {
+    // live cell with too few or too many neighbours
+    return neighbours < 2 || neighbours > 3;
+  } else {
+    // dead cell becomes live cell
+    return neighbours === 3;
+  }
+};
+
+/**
  * get the underlying Cell by canvas coordinates
  * @param  {Number} x - The pixel x-coordinate on the canvas
  * @param  {Number} y - The pixel y-coordinate on the canvas
@@ -116,14 +131,7 @@ function tick() {
   for (var cx = 0; cx < cells.length; cx++) {
     for (var cy = 0; cy < cells[cx].length; cy++) {
       var cell = cells[cx][cy];
-      var neighbours = cell.countNeighbours();
-      if (cell.active) {
-        if (neighbours < 2 || neighbours > 3) {
-          // live cell with too few or too many neighbours
-          toggles.push(cell);
-        }
-      } else if (neighbours === 3) {
-        // dead cell becomes live cell
+      if (cell.willToggle()) {
         toggles.push(cell);
       }
     }
