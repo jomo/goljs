@@ -86,8 +86,8 @@ Cell.prototype.willToggle = function() {
  * @returns {Cell} - The underlying Cell
  */
 function pointToCell(x, y) {
-  var cx = Math.floor((x - canvas.offsetLeft) / cellsize);
-  var cy = Math.floor((y - canvas.offsetTop) / cellsize);
+  var cx = Math.floor((x - canvas.getBoundingClientRect().left) / cellsize);
+  var cy = Math.floor((y - canvas.getBoundingClientRect().top) / cellsize);
   return cells[cx + offscreen][cy + offscreen];
 }
 
@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   }, 500);
 
   canvas.addEventListener("click", function(evt) {
-    var cell = pointToCell(evt.layerX, evt.layerY);
+    var cell = pointToCell(evt.clientX, evt.clientY);
     cell.toggle();
     console.log(cell);
   }, false);
